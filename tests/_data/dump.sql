@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS `basic`;
+
+CREATE TABLE `basic` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `value` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`));
