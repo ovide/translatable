@@ -1,7 +1,7 @@
 <?php namespace Mocks;
 
 
-class TranslationArray implements \Ovide\Lib\Translate\Translation
+class TranslationArray implements \Ovide\Lib\Translate\TranslationInterface
 {
 	protected $_translations =
 	[

@@ -54,7 +54,7 @@ class Service implements \Phalcon\DI\InjectionAwareInterface
 	 * Gets a translation adapter instance for the given model name
 	 *
 	 * @param string $modelName
-	 * @return Translation
+	 * @return TranslationInterface
 	 */
 	public function getAdapterFor($modelName)
 	{

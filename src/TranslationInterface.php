@@ -3,14 +3,14 @@
 /**
  * Defines an adapter that stores/retrieves translations for a given Model
  */
-interface Translation
+interface TranslationInterface
 {
 	/**
 	 * Gets a Translation for the model instance
 	 *
 	 * @param \Ovide\Lib\Translate\Model $model
 	 * @param array $pk
-	 * @return Translation
+	 * @return TranslationInterface
 	 */
 	public static function retrieve(Model $model, $pk);
 

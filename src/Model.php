@@ -76,7 +76,7 @@ class Model extends \Phalcon\Mvc\Model
 	/**
 	 * Cached translations
      *
-	 * @var Translation
+	 * @var TranslationInterface
 	 */
 	private $__translations = [];
 
