@@ -9,7 +9,7 @@ interface TranslationInterface
 	 * Gets a Translation for the model instance
 	 *
 	 * @param \Ovide\Lib\Translate\Model $model
-	 * @param array $pk
+	 * @param array $pk Field keys that identifies the source model
 	 * @param array $options
 	 * @return TranslationInterface
 	 */
