@@ -3,10 +3,11 @@
 /**
  * @property string $name
  * @property string $description
+ * @property Table22[] $t2
  */
-class Basic extends \Ovide\Lib\Translate\Model
+class Table21 extends \Ovide\Lib\Translate\Model
 {
-	const SRC_TABLE = 'basic';
+	const SRC_TABLE = 'table1';
 
 	public $id;
 	public $value;
@@ -16,5 +17,7 @@ class Basic extends \Ovide\Lib\Translate\Model
 	public function initialize()
 	{
 		$this->setSource(static::SRC_TABLE);
+		$this->setConnectionService('db2');
+		$this->hasMany('id', Table22::class, 't1_id', ['alias' => 't2']);
 	}
 }
