@@ -10,9 +10,10 @@ interface TranslationInterface
 	 *
 	 * @param \Ovide\Lib\Translate\Model $model
 	 * @param array $pk
+	 * @param array $options
 	 * @return TranslationInterface
 	 */
-	public static function retrieve(Model $model, $pk);
+	public static function retrieve(Model $model, $pk, array $options=null);
 
 	/**
 	 * Gets the model translation for a given field and language

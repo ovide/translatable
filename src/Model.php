@@ -288,7 +288,9 @@ class Model extends \Phalcon\Mvc\Model
 		$key = $this->getKeyFilters();
 
 		$adapter = $this->_translator->getAdapterFor(static::class);
-		$this->__translations = $adapter::retrieve($this, $key);
+		$options = isset($adapter['options']) ? $adapter['options'] : null;
+		$class   = $adapter['manager'];
+		$this->__translations = $class::retrieve($this, $key, $options);
 	}
 
 	/**

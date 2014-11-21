@@ -87,7 +87,7 @@ class ModelTest extends \Codeception\TestCase\Test
 		$I->haveInDatabase('basic', ['id' => 1, 'value' => 'foo']);
 
 		$service = $this->getMock(Ovide\Lib\Translate\Service::class, ['getAdapterFor']);
-		$service->method('getAdapterFor')->willReturn(Mocks\TranslationArray::class);
+		$service->method('getAdapterFor')->willReturn(['manager' => Mocks\TranslationArray::class]);
 
 		$this->di->setShared('translator', $service);
 
@@ -99,7 +99,7 @@ class ModelTest extends \Codeception\TestCase\Test
 	public function testSetGetAndSave()
 	{
 		$service    = $this->getMock(Ovide\Lib\Translate\Service::class, ['getAdapterFor']);
-		$service->method('getAdapterFor')->willReturn(Mocks\TranslationArray::class);
+		$service->method('getAdapterFor')->willReturn(['manager' => Mocks\TranslationArray::class]);
 
 		$this->di->setShared('translator', $service);
 
@@ -173,7 +173,7 @@ class ModelTest extends \Codeception\TestCase\Test
 				->setMethods(['getAdapterFor'])
 				->getMock();
 
-		$translator->method('getAdapterFor')->willReturn(Mocks\TranslationArray::class);
+		$translator->method('getAdapterFor')->willReturn(['manager' => Mocks\TranslationArray::class]);
 		$this->di->setShared('translator', $translator);
 
 		$model = Mocks\Basic::findFirst();

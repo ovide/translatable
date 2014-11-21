@@ -1,19 +1,12 @@
 <?php namespace Ovide\Lib\Translate;
 
 /**
- * Injectable service for translatable models.
+ * Service for translatable models.
  *
  * You can attach an adapter for each connection service ('db' is the default)
  */
-class Service implements \Phalcon\DI\InjectionAwareInterface
+class Service
 {
-	/**
-	 * DependencyInjector
-	 *
-	 * @var \Phalcon\DiInterface
-	 */
-	protected $_di;
-
 	/**
 	 * Association of translatable models with its translation adapter
 	 *
@@ -45,16 +38,21 @@ class Service implements \Phalcon\DI\InjectionAwareInterface
 	 * @param string $con The name of the connecion (ex. 'db')
 	 * @param string $adapterClassName
 	 */
-	public function attachAdapter($con, $adapterClassName)
+	public function attachAdapter($con, $adapterClassName, array $options=null)
 	{
-		$this->_connections[$con] = $adapterClassName;
+		$this->_connections[$con] = [
+			'manager' => $adapterClassName,
+			'options' => $options
+		];
 	}
 
 	/**
 	 * Gets a translation adapter instance for the given model name
 	 *
 	 * @param string $modelName
-	 * @return TranslationInterface
+	 * @return array
+	 *   'manager' => string The Translation adapter class name
+	 *   'options' => array  Array of options
 	 */
 	public function getAdapterFor($modelName)
 	{
@@ -62,27 +60,6 @@ class Service implements \Phalcon\DI\InjectionAwareInterface
 			$this->_models[$modelName] = 'db';
 		}
 
-		$model = $this->_connections[$this->_models[$modelName]];
-		return new $model();
-	}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return \Phalcon\DiInterface
-	 */
-	public function getDI()
-	{
-		return $this->_di;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @param \Phalcon\DiInterface
-	 */
-	public function setDI($dependencyInjector)
-	{
-		$this->_di = $dependencyInjector;
+		return $this->_connections[$this->_models[$modelName]];
 	}
 }

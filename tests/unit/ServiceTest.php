@@ -22,19 +22,12 @@ class ServiceTest extends \Codeception\TestCase\Test
     // tests
     public function testAttachAdapter()
     {
-		$service = new \Ovide\Lib\Translate\Service();
+		$service  = new \Ovide\Lib\Translate\Service();
+		$expected = ['manager' => Mocks\TranslationArray::class, 'options' => null];
 
 		$service->attachAdapter('db', Mocks\TranslationArray::class);
-		$this->assertInstanceOf(Mocks\TranslationArray::class, $service->getAdapterFor('FooModel'));
+		$this->assertEquals($expected, $service->getAdapterFor('FooModel'));
 		$service->bindModelConnection('db', 'FooModel');
-		$this->assertInstanceOf(Mocks\TranslationArray::class, $service->getAdapterFor('FooModel'));
+		$this->assertEquals($expected, $service->getAdapterFor('FooModel'));
     }
-
-	public function testGetDi()
-	{
-		$service = new \Ovide\Lib\Translate\Service();
-		$service->setDI($this->di);
-		$this->assertSame($this->di, $service->getDI());
-	}
-
 }

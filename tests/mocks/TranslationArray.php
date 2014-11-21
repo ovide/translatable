@@ -51,7 +51,7 @@ class TranslationArray implements \Ovide\Lib\Translate\TranslationInterface
 		$this->_tmpTranslations[$language][$field] = $value;
 	}
 
-	public static function retrieve(\Ovide\Lib\Translate\Model $model, $pk)
+	public static function retrieve(\Ovide\Lib\Translate\Model $model, $pk, array $options=null)
 	{
 		static::increment(__FUNCTION__);
 
