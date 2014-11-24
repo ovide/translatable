@@ -189,6 +189,10 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 			$this->_translations[$language] = [];
 		}
 
+		if (!isset($this->_translations[$language][$field])) {
+			$this->_translations[$language][$field] = null;
+		}
+
 		if ($this->_translations[$language][$field] instanceof \Phalcon\Mvc\Model) {
 			$this->_translations[$language][$field]->text = $value;
 		} else {
@@ -197,13 +201,14 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 			}
 
 			$className = $this->_backend;
-			$this->_translations[$language][$field] = new $className([
-				'table'    => $this->_src->getSource(),
-				'row'      => $this->_key,
-				'field'    => $field,
-				'language' => $language,
-				'text'     => $value
-			]);
+			$model = new $className();
+			$model->table = $this->_src->getSource();
+			$model->row   = $this->_key;
+			$model->field = $field;
+			$model->lang  = $language;
+			$model->text  = $value;
+			$this->_translations[$language][$field] = $model;
+
 		}
 	}
 
