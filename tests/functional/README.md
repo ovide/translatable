@@ -1,4 +1,4 @@
-- there are 2 main databases with a few tables, some tables are managed with different backend adapters:htop
+- there are 2 main databases with a few tables, some tables are managed with different backend adapters:
 
 1. translatable
   - table1    Model (same database)
@@ -6,7 +6,7 @@
   - table3    Collection (MongoDB)
 2. translatable2
   - table1    Model (same database)
-  - table2    Redis
+  - table2    Collection (MongoDB)
 
 - each table has at least a translatable field.
 - translatable.table1 and translatable.table3 are n:m related through table2.
