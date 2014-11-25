@@ -20,6 +20,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testConfigure()
     {
+		$this->di = Phalcon\DI::reset();
 		$this->di = new \Phalcon\DI();
 		$this->di->setShared('modelsManager', \Phalcon\Mvc\Model\Manager::class);
 		$this->di->setShared('modelsMetadata', \Phalcon\Mvc\Model\MetaData\Memory::class);
@@ -51,11 +52,11 @@ class BasicTest extends \Codeception\TestCase\Test
 			$service->attachAdapter('db', Ovide\Lib\Translate\Adapter\Model\Manager::class, [
 				'backendModel' => \Mocks\Translation1::class
 			]);
-			$service->attachAdapter('db', Ovide\Lib\Translate\Adapter\Model\Manager::class, [
+			$service->attachAdapter('db2', Ovide\Lib\Translate\Adapter\Model\Manager::class, [
 				'backendModel' => \Mocks\Translation2::class
 			]);
 			$service->attachAdapter('mongoTranslator', \Ovide\Lib\Translate\Adapter\Collection\Manager::class);
-			$service->bindModelConnection('mongoTraslator', \Mocks\Table13::class);
+			$service->bindModelConnection('mongoTranslator', \Mocks\Table13::class);
 			return $service;
 		});
     }
@@ -64,5 +65,65 @@ class BasicTest extends \Codeception\TestCase\Test
 	{
 		$t11r1 = new Mocks\Table11();
 		$t11r1->create(['id' => 1, 'name' => 'table11 record1 name']);
+		$this->assertEquals('table11 record1 name', $t11r1->name);
+		$t11r1->description = 'table11 record1 description';
+		$t11r1->save();
+		$this->assertEquals('table11 record1 description', $t11r1->description);
+		$t11r2 = new Mocks\Table11();
+		$t11r2->name = 'table11 record2 name';
+		$t11r2->id   = 2;
+
+		$t12r1 = new Mocks\Table12();
+		$t12r1->id          = 1;
+		$t12r1->name        = 'table12 record1 name';
+		$t12r1->description = 'table12 record1 description';
+		$t12r1->save();
+		$t11r2->save();
+
+		$t13r1 = new \Mocks\Table13();
+		$t13r1->t1_id       = $t11r1->id;
+		$t13r1->t2_id       = $t12r1->id;
+		$t13r1->save();
+		$t13r1->name        = '1-1 name';
+		$t13r1->description = '1-1 description';
+
+		$t12r1->save();
+		$t13r1->save();
+
+		$t21r1 = new \Mocks\Table21();
+		$t21r1->id    = 1;
+		$t21r1->value = 'foo';
+		$t21r1->name  = 'the name';
+		$t21r1->save();
+		$t21r1->description = 'the description';
+
+		$t22r1 = new Mocks\Table22();
+		$t22r1->t1_id = $t21r1->id;
+		$t22r1->description = 'fooo';
+		$t22r1->name = 'name';
+		$t22r1->save();
+	}
+
+	public function testPersistence()
+	{
+		$t11r1 = Mocks\Table11::findFirst(1);
+		$t11r2 = Mocks\Table11::findFirst(2);
+		$this->assertEquals('table11 record1 name', $t11r1->name);
+		$this->assertEquals('table11 record1 description', $t11r1->description);
+		$this->assertEquals('table11 record2 name', $t11r2->name);
+		$this->assertEmpty($t11r2->description);
+		$this->assertEquals('1-1 name', $t11r1->t3[0]->name);
+		$this->assertEquals('1-1 description', $t11r1->t3[0]->description);
+		$t22r1 = Mocks\Table22::findFirst();
+		$this->assertEquals('name', $t22r1->name);
+		$this->assertEquals('fooo', $t22r1->description);
+		$this->assertEmpty($t22r1->t1->description);
+		$this->assertEquals('the name', $t22r1->t1->name);
+		$this->assertEquals('foo', $t22r1->t1->value);
+	}
+
+	public function testChangeLanguage()
+	{
+		
 	}
 }
