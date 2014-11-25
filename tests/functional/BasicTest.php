@@ -124,6 +124,6 @@ class BasicTest extends \Codeception\TestCase\Test
 
 	public function testChangeLanguage()
 	{
-		
+
 	}
 }
