@@ -6,7 +6,7 @@
  * @property Table11[] t1
  * @property Table13[] t3
  */
-class Basic extends \Ovide\Lib\Translate\Model
+class Table12 extends \Ovide\Lib\Translate\Model
 {
 	const SRC_TABLE = 'table2';
 
