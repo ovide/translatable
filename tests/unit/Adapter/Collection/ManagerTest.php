@@ -104,20 +104,6 @@ class ManagerTest extends \Codeception\TestCase\Test
 
 		$I->haveInDatabase('basic', ['id' => $record]);
 
-		/*
-		$I->haveInCollection('translation', [
-			'db'       => 'db',
-			'table'    => \Mocks\Basic::SRC_TABLE,
-			'field'    => $field,
-			'row'      => "$record",
-			'language' => [
-				$language => [
-					$field => 'bar'
-				]
-			]
-		]);
-		*/
-
 		$model = \Mocks\Basic::findFirst($record);
 		$manager = \Ovide\Lib\Translate\Adapter\Collection\Manager::retrieve($model, ['id']);
 
