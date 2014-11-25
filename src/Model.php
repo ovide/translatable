@@ -99,7 +99,7 @@ class Model extends \Phalcon\Mvc\Model
 	 *
 	 * @var array
 	 */
-	protected static $__pk = null;
+	protected $__pk = null;
 
     /**
      * Calls the initializer after create a new object
@@ -132,6 +132,10 @@ class Model extends \Phalcon\Mvc\Model
      */
 	public function afterDelete()
 	{
+		if (!$this->__translations) {
+			$this->loadTranslations();
+		}
+
 		$this->__translations->remove();
 	}
 
@@ -140,6 +144,10 @@ class Model extends \Phalcon\Mvc\Model
      */
 	public function afterSave()
 	{
+		if (!$this->__translations) {
+			$this->loadTranslations();
+		}
+
 		$this->__translations->persist($this->__updated);
 	}
 
@@ -304,24 +312,23 @@ class Model extends \Phalcon\Mvc\Model
 	}
 
 	/**
-	 * Returns an array with the primary key values that identifies the row
+	 * Returns an array with the primary keys that identifies the row
 	 * @return array
-     *  The key values that identifies the main row
+     *  The key fields that identifies the main row
 	 */
 	private function getKeyFilters()
 	{
-		if (!is_array(static::$__pk)) {
+		if (!is_array($this->__pk)) {
 			$metadata = $this->getModelsMetaData();
 			$mapped   = $metadata->getColumnMap($this);
 			$keys     = $metadata->getPrimaryKeyAttributes($this);
 
 			foreach ($keys as $key) {
 				$use = isset($mapped[$key])? $mapped[$key] : $key;
-				if (!$this->$use) return [];
-				static::$__pk[] = $use;
+				$this->__pk[] = $use;
 			}
 		}
 
-		return static::$__pk;
+		return $this->__pk;
 	}
 }

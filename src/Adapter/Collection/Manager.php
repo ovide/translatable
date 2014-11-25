@@ -119,7 +119,7 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 	protected function fetchRecord()
 	{
 		$data = [
-			'db'    => $this->_src->getSchema(),
+			'db'    => $this->_src->getReadConnectionService(),
 			'table' => $this->_src->getSource(),
 			'row'   => $this->_key
 		];
@@ -148,8 +148,10 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 
 		if ($records === null) {
 			$this->_cur = clone $this->_translations;
-		} else {
+		} else if(count($records)) {
 			$this->_mergeRecords($records);
+		} else {
+			return true;
 		}
 
 		$this->_cur->save();

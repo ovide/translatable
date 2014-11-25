@@ -142,6 +142,16 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 		if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
 			return false;
 		}
+		if (!$this->_key) {
+			$this->generateKey();
+			$key = $this->_key;
+
+			array_walk_recursive($this->_translations, function($translation) use ($key) {
+				if (!$translation->row) {
+					$translation->row = $key;
+				}
+			});
+		}
 
 		if ($records === null) {
 			array_walk_recursive($this->_translations, function($model) {
