@@ -56,7 +56,9 @@ class TranslationArray implements \Ovide\Lib\Translate\TranslationInterface
 		static::increment(__FUNCTION__);
 
 		$instance = new static();
-		$instance->_id = $model->{$pk[0]};
+		if (count($pk)) {
+			$instance->_id = $model->{$pk[0]};
+		}
 
 		return $instance;
 	}
