@@ -1,6 +1,7 @@
 <?php namespace Mocks;
 
 /**
+ * @property string $name
  * @property string $description
  * @property Table21 $t1
  */
