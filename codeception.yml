@@ -17,6 +17,13 @@ modules:
             dump: tests/_data/dump.sql
             populate: true
             cleanup: false
+        MongoDb:
+            dsn: 'mongodb://127.0.0.1:27017/translatable'
+            user: ''
+            password: ''
+            dump: tests/_data/mongo.json
+            populate: true
+            cleanup: true
 coverage:
     enabled: true
     include:
