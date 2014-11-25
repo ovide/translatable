@@ -78,7 +78,7 @@ class Model extends \Phalcon\Mvc\Model
      *
 	 * @var TranslationInterface
 	 */
-	private $__translations = [];
+	private $__translations = null;
 
 	/**
 	 * The current language
@@ -90,7 +90,7 @@ class Model extends \Phalcon\Mvc\Model
 	/**
      * Modified fields to save
      *
-	 * @var array Formed by $field => $language
+	 * @var array Formed by $language => $field
 	 */
 	private $__updated = [];
 
@@ -107,6 +107,16 @@ class Model extends \Phalcon\Mvc\Model
 	public function onConstruct()
 	{
 		$this->_init();
+	}
+
+	public function create($data = null, $whiteList = null) {
+		foreach (array_keys($data) as $field) {
+			if (in_array($field, $this->_translatable)) {
+				$this->setTranslation($field, $data[$field]);
+			}
+		}
+
+		parent::create($data, $whiteList);
 	}
 
     /**
