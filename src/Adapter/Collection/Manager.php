@@ -61,6 +61,7 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 	 * The separator used to generate the $_key
 	 */
 	const KEY_GLUE = '@';
+	
 
 	/**
 	 * {@inheritdoc}
@@ -162,6 +163,11 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 		$this->_cur->save();
 	}
 
+	/**
+	 * Merge the translations from $_translations to $_cur
+	 *
+	 * @param array $records
+	 */
 	private function _mergeRecords(array $records)
 	{
 		$this->_cur->row = $this->_translations->row;
