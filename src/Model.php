@@ -124,6 +124,7 @@ class Model extends \Phalcon\Mvc\Model
      */
 	public function afterFetch()
 	{
+		$this->_init();
 		$this->loadTranslations();
 	}
 
@@ -132,9 +133,11 @@ class Model extends \Phalcon\Mvc\Model
      */
 	public function afterDelete()
 	{
+		/*
 		if (!$this->__translations) {
 			$this->loadTranslations();
 		}
+		 */
 
 		$this->__translations->remove();
 	}
@@ -149,6 +152,7 @@ class Model extends \Phalcon\Mvc\Model
 		}
 
 		$this->__translations->persist($this->__updated);
+		$this->__updated = [];
 	}
 
 	public function setConnectionService($connectionService)

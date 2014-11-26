@@ -124,6 +124,53 @@ class BasicTest extends \Codeception\TestCase\Test
 
 	public function testChangeLanguage()
 	{
+		/* @var $t11r1 \Ovide\Lib\Translate\Model */
+		/* @var $t11r2 \Ovide\Lib\Translate\Model */
+		/* @var $t22r1 \Ovide\Lib\Translate\Model */
+		/* @var $t13r1 \Ovide\Lib\Translate\Model */
+		$t11r1 = Mocks\Table11::findFirst(1);
+		$t11r2 = Mocks\Table11::findFirst(2);
+
+		$t13r1 = $t11r1->t3[0];
+		$t11r1->setCurrentLang('es');
+		$t11r1->name = 'Nombre de t11r1';
+		$t11r1->description = 'descripción de t11r1';
+		$t11r1->save();
+
+		$t11r2->name = 't11r2 en name';
+		$t11r2->setCurrentLang('es');
+		$t11r2->save();
+		$t11r2->description = 'no se guardará';
+		$t13r1->setTranslation('name', 'Nombre para t13r1', 'es');
+		$t13r1->setTranslation('name', 'Nom per t13r1', 'ca');
+		$t13r1->setTranslation('description', 'La descripció', 'ca');
+		$t13r1->setTranslation('description', 'The description', 'en');
+		$t13r1->save();
+
+		$curLang = 'ca';
+		\Ovide\Lib\Translate\Model::setLanguageResolver(function() use($curLang) {
+			return $curLang;
+		});
+
+		$t22r1 = Mocks\Table22::findFirst();
+		$this->assertEquals($curLang, $t22r1->getCurrentLang());
+		$t22r1->name = 'El nom';
+		$t22r1->description = 'La descripció';
+		$t22r1->t1->name = 'Un altre nom';
+		$t22r1->t1->description = 'Una alatra descripció';
+		$t22r1->save();
+	}
+
+	public function testGetDifferentLanguages()
+	{
+		/* @var $t11r1 \Ovide\Lib\Translate\Model */
+		/* @var $t11r2 \Ovide\Lib\Translate\Model */
+		/* @var $t22r1 \Ovide\Lib\Translate\Model */
+		/* @var $t13r1 \Ovide\Lib\Translate\Model */
+		$t11r1 = Mocks\Table11::findFirst(1);
+		$t11r2 = Mocks\Table11::findFirst(2);
+		$t22r1 = Mocks\Table22::findFirst();
+		$t13r1 = $t11r1->t3[0];
 
 	}
 }

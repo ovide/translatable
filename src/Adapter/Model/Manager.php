@@ -158,8 +158,15 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 				$model->save();
 			});
 		} else {
-			foreach ($records as $language => $fields) {
-				foreach ($fields as $field) {
+			$this->__persist($records);
+		}
+	}
+
+	private function __persist(array $records)
+	{
+		foreach ($records as $language => $fields) {
+			foreach ($fields as $field) {
+				if (isset($this->_translations[$language][$field])) {
 					$this->_translations[$language][$field]->save();
 				}
 			}
@@ -218,7 +225,6 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 			$model->lang  = $language;
 			$model->text  = $value;
 			$this->_translations[$language][$field] = $model;
-
 		}
 	}
 
