@@ -50,7 +50,6 @@
  */
 class Model extends \Phalcon\Mvc\Model
 {
-
 	/**
 	 * Array of translatable fields.
 	 * Add a @property annotation for each field instead of a public attribute
@@ -64,6 +63,13 @@ class Model extends \Phalcon\Mvc\Model
 	 * @var Service
 	 */
 	protected $_translator  = null;
+
+	/**
+	 * An array of field names that form the PK
+	 *
+	 * @var array
+	 */
+	protected $__pk = null;
 
 	/**
 	 * Tries to resolve the current default language
@@ -94,12 +100,6 @@ class Model extends \Phalcon\Mvc\Model
 	 */
 	private $__updated = [];
 
-	/**
-	 * An array of field names that form the PK
-	 *
-	 * @var array
-	 */
-	protected $__pk = null;
 
     /**
      * Calls the initializer after create a new object
@@ -109,6 +109,9 @@ class Model extends \Phalcon\Mvc\Model
 		$this->_init();
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function create($data = null, $whiteList = null) {
 		foreach (array_keys($data) as $field) {
 			if (in_array($field, $this->_translatable)) {
@@ -155,6 +158,9 @@ class Model extends \Phalcon\Mvc\Model
 		$this->__updated = [];
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function setConnectionService($connectionService)
 	{
 		$service = $this->_dependencyInjector->getTranslator();
@@ -162,19 +168,13 @@ class Model extends \Phalcon\Mvc\Model
 		$service->bindModelConnection($connectionService, static::class);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function setReadConnectionService($connectionService)
 	{
 		parent::setReadConnectionService($connectionService);
 		$this->_conRead = $connectionService;
-	}
-
-    /**
-     * Initializer
-     */
-	private function _init()
-	{
-		$this->_translator = $this->_dependencyInjector->getTranslator();
-		$this->setCurrentLang($this->resolveLanguage());
 	}
 
 	/**
@@ -292,6 +292,13 @@ class Model extends \Phalcon\Mvc\Model
 		static::$_langResolver = $function;
 	}
 
+	/**
+	 * Resolves the current language using the $_langResolver.
+	 * Default is 'en'
+	 *
+	 * @see setLanguageResolver
+	 * @return string
+	 */
 	protected static function resolveLanguage()
 	{
 		if (static::$_langResolver === null) {
@@ -300,6 +307,15 @@ class Model extends \Phalcon\Mvc\Model
 			$func = static::$_langResolver;
 			return $func();
 		}
+	}
+
+    /**
+     * Initializer
+     */
+	private function _init()
+	{
+		$this->_translator = $this->_dependencyInjector->getTranslator();
+		$this->setCurrentLang($this->resolveLanguage());
 	}
 
 	/**
