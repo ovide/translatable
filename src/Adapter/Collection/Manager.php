@@ -124,7 +124,7 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 			'row'   => $this->_key
 		];
 
-		$this->_translations = Translation::findFirst($data);
+		$this->_translations = Translation::findFirst([$data]);
 
 		if (!$this->_translations) {
 			$this->_translations           = new Translation();
@@ -146,6 +146,11 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 			return false;
 		}
 
+		if ($this->_translations && !$this->_translations->row) {
+			$this->generateKey();
+			$this->_translations->row = $this->_key;
+		}
+
 		if ($records === null) {
 			$this->_cur = clone $this->_translations;
 		} else if(count($records)) {
@@ -159,6 +164,7 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
 
 	private function _mergeRecords(array $records)
 	{
+		$this->_cur->row = $this->_translations->row;
 		foreach ($records as $language => $fields) {
 			foreach ($fields as $field) {
 				if (!isset($this->_cur->language[$language])) {
