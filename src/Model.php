@@ -163,9 +163,12 @@ class Model extends \Phalcon\Mvc\Model
 	 */
 	public function setConnectionService($connectionService)
 	{
+		/* @var $service \Ovide\Lib\Translate\Service */
 		$service = $this->_dependencyInjector->getTranslator();
 		parent::setConnectionService($connectionService);
-		$service->bindModelConnection($connectionService, static::class);
+		if (!$service->isModelBinded(static::class)) {
+			$service->bindModelConnection($connectionService, static::class);
+		}
 	}
 
 	/**

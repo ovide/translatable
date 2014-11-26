@@ -33,6 +33,17 @@ class Service
 	}
 
 	/**
+	 * Check if given model is already binded
+	 *
+	 * @param string $modelName
+	 * @return bool
+	 */
+	public function isModelBinded($modelName)
+	{
+		return isset($this->_models[$modelName]);
+	}
+
+	/**
 	 * Attaches an adapter to a DB connection service
 	 *
 	 * @param string $con The name of the connecion (ex. 'db')
