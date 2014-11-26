@@ -57,6 +57,8 @@ class BasicTest extends \Codeception\TestCase\Test
 			]);
 			$service->attachAdapter('mongoTranslator', \Ovide\Lib\Translate\Adapter\Collection\Manager::class);
 			$service->bindModelConnection('mongoTranslator', \Mocks\Table13::class);
+			$service->bindModelConnection('mongoTranslator', \Mocks\Table22::class);
+
 			return $service;
 		});
     }
@@ -157,7 +159,7 @@ class BasicTest extends \Codeception\TestCase\Test
 		$t22r1->name = 'El nom';
 		$t22r1->description = 'La descripció';
 		$t22r1->t1->name = 'Un altre nom';
-		$t22r1->t1->description = 'Una alatra descripció';
+		$t22r1->t1->description = 'Una altra descripció';
 		$t22r1->save();
 	}
 
@@ -172,5 +174,33 @@ class BasicTest extends \Codeception\TestCase\Test
 		$t22r1 = Mocks\Table22::findFirst();
 		$t13r1 = $t11r1->t3[0];
 
+		$t11r1->setCurrentLang('en');
+		$this->assertEquals('table11 record1 description', $t11r1->description);
+		$this->assertEquals('table11 record1 name', $t11r1->name);
+		$t11r1->setCurrentLang('es');
+		$this->assertEquals('descripción de t11r1', $t11r1->description);
+		$this->assertEquals('Nombre de t11r1', $t11r1->name);
+
+		$this->assertEquals('t11r2 en name', $t11r2->getTranslation('name', 'en'));
+
+		$this->assertEquals('table12 record1 description', $t11r1->t2[0]->getTranslation('description', 'en'));
+		$this->assertEquals('table12 record1 name', $t11r1->t2[0]->getTranslation('name', 'en'));
+
+		$this->assertEquals('Nom per t13r1', $t13r1->name);
+		$this->assertEquals('La descripció', $t13r1->description);
+		$this->assertEquals('Nombre para t13r1', $t13r1->getTranslation('name', 'es'));
+		$this->assertEmpty($t13r1->getTranslation('description', 'es'));
+		$this->assertEquals('1-1 name', $t13r1->getTranslation('name', 'en'));
+		$this->assertEquals('The description', $t13r1->getTranslation('description', 'en'));
+
+		$this->assertEquals('El nom', $t22r1->name);
+		$this->assertEquals('La descripció', $t22r1->description);
+		$this->assertEquals('name', $t22r1->getTranslation('name', 'en'));
+		$this->assertEquals('fooo', $t22r1->getTranslation('description', 'en'));
+		$this->assertEquals('Un altre nom', $t22r1->t1->name);
+		$this->assertEquals('Una altra descripció', $t22r1->t1->description);
+		$this->assertEquals('the name', $t22r1->t1->getTranslation('name', 'en'));
+		$this->assertEmpty($t22r1->t1->getTranslation('description', 'es'));
+		$this->assertEmpty($t22r1->getTranslation('name', 'es'));
 	}
 }
