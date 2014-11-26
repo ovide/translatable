@@ -3,11 +3,14 @@
 
 class BasicTest extends \Codeception\TestCase\Test
 {
-   /**
-    * @var \FunctionalTester
-    */
+	/**
+	 * @var \FunctionalTester
+	 */
     protected $tester;
 
+	/**
+	 * @var Phalcon\DI
+	 */
 	protected $di;
 
     protected function _before()
