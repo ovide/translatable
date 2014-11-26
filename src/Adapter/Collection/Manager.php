@@ -158,7 +158,7 @@ class Manager implements \Ovide\Lib\Translate\TranslationInterface
             return true;
         }
 
-        $this->_cur->save();
+        return $this->_cur->save();
     }
 
     /**
