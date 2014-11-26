@@ -1,4 +1,4 @@
-<?php namespace Mocks;
+<?php namespace mocks;
 
 /**
  * @property string $name
@@ -6,15 +6,15 @@
  */
 class Basic extends \Ovide\Lib\Translate\Model
 {
-	const SRC_TABLE = 'basic';
+    const SRC_TABLE = 'basic';
 
-	public $id;
-	public $value;
+    public $id;
+    public $value;
 
-	protected $_translatable = ['name', 'description'];
+    protected $_translatable = ['name', 'description'];
 
-	public function initialize()
-	{
-		$this->setSource(static::SRC_TABLE);
-	}
+    public function initialize()
+    {
+        $this->setSource(static::SRC_TABLE);
+    }
 }

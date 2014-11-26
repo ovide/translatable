@@ -1,4 +1,4 @@
-<?php namespace Mocks;
+<?php namespace mocks;
 
 /**
  * @property string $name
@@ -7,17 +7,17 @@
  */
 class Table22 extends \Ovide\Lib\Translate\Model
 {
-	const SRC_TABLE = 'table2';
+    const SRC_TABLE = 'table2';
 
-	public $id;
-	public $t1_id;
+    public $id;
+    public $t1_id;
 
-	protected $_translatable = ['name', 'description'];
+    protected $_translatable = ['name', 'description'];
 
-	public function initialize()
-	{
-		$this->setSource(static::SRC_TABLE);
-		$this->setConnectionService('db2');
-		$this->belongsTo('t1_id', Table21::class, 'id', ['alias' => 't1']);
-	}
+    public function initialize()
+    {
+        $this->setSource(static::SRC_TABLE);
+        $this->setConnectionService('db2');
+        $this->belongsTo('t1_id', Table21::class, 'id', ['alias' => 't1']);
+    }
 }

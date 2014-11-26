@@ -24,218 +24,219 @@
  */
 class Manager implements \Ovide\Lib\Translate\TranslationInterface
 {
-	/**
-	 * Dictoionary of translated fields
-	 *
-	 * @var array [string $language => [ string $field => \Phalcon\Mvc\Model $translation]]
-	 */
-	protected $_translations = [];
+    /**
+     * Dictoionary of translated fields
+     *
+     * @var array [string $language => [ string $field => \Phalcon\Mvc\Model $translation]]
+     */
+    protected $_translations = [];
 
-	/**
-	 * Field keys that identifies the $_src model
-	 *
-	 * @var array
-	 */
-	protected $_pk;
+    /**
+     * Field keys that identifies the $_src model
+     *
+     * @var array
+     */
+    protected $_pk;
 
-	/**
-	 * The source model
-	 *
-	 * @var \Ovide\Lib\Translate\Model
-	 */
-	protected $_src;
+    /**
+     * The source model
+     *
+     * @var \Ovide\Lib\Translate\Model
+     */
+    protected $_src;
 
-	/**
-	 * The key used to retrieve the translation record.
-	 *
-	 * @var string
-	 */
-	protected $_key = null;
+    /**
+     * The key used to retrieve the translation record.
+     *
+     * @var string
+     */
+    protected $_key = null;
 
-	/**
-	 * The Model used to manage the translations
-	 *
-	 * @var string
-	 */
-	protected $_backend;
+    /**
+     * The Model used to manage the translations
+     *
+     * @var string
+     */
+    protected $_backend;
 
-	/**
-	 * The separator used to generate the $_key
-	 */
-	const KEY_GLUE = '@';
+    /**
+     * The separator used to generate the $_key
+     */
+    const KEY_GLUE = '@';
 
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function __construct(\Ovide\Lib\Translate\Model $src, $pk, array $options)
-	{
-		$this->_src     = $src;
-		$this->_pk      = $pk;
-		$this->_backend = $options['backendModel'];
-	}
+    /**
+     * {@inheritdoc}
+     */
+    protected function __construct(\Ovide\Lib\Translate\Model $src, $pk, array $options)
+    {
+        $this->_src     = $src;
+        $this->_pk      = $pk;
+        $this->_backend = $options['backendModel'];
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function get($field, $language)
-	{
-		if (!isset($this->_translations[$language])) {
-			if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
-				return '';
-			}
+    /**
+     * {@inheritdoc}
+     */
+    public function get($field, $language)
+    {
+        if (!isset($this->_translations[$language])) {
+            if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
+                return '';
+            }
 
-			$this->_translations[$language] = [];
-		}
+            $this->_translations[$language] = [];
+        }
 
-		if (!isset($this->_translations[$language][$field])) {
-			if ($this->_key === null) {
-				$this->generateKey();
-			}
+        if (!isset($this->_translations[$language][$field])) {
+            if ($this->_key === null) {
+                $this->generateKey();
+            }
 
-			$this->fetchRecord($field, $language);
-		}
+            $this->fetchRecord($field, $language);
+        }
 
-		return $this->_translations[$language][$field]->text;
-	}
+        return $this->_translations[$language][$field]->text;
+    }
 
-	/**
-	 * Generates a unique key that identifies the translations record for the current model
-	 */
-	protected function generateKey()
-	{
-		$this->_key = implode(static::KEY_GLUE, $this->_src->toArray($this->_pk));
-	}
+    /**
+     * Generates a unique key that identifies the translations record for the current model
+     */
+    protected function generateKey()
+    {
+        $this->_key = implode(static::KEY_GLUE, $this->_src->toArray($this->_pk));
+    }
 
-	/**
-	 * Gets the translation record from DB
-	 *
-	 * @param string $field
-	 * @param string $language
-	 */
-	protected function fetchRecord($field, $language)
-	{
-		$data = [
-			'table' => $this->_src->getSource(),
-			'row'   => $this->_key,
-			'field' => $field,
-			'lang'  => $language
-		];
+    /**
+     * Gets the translation record from DB
+     *
+     * @param string $field
+     * @param string $language
+     */
+    protected function fetchRecord($field, $language)
+    {
+        $data = [
+            'table' => $this->_src->getSource(),
+            'row'   => $this->_key,
+            'field' => $field,
+            'lang'  => $language,
+        ];
 
-		$className = $this->_backend;
-		$this->_translations[$language][$field] = $className::findFirst([
-			'table = :table: AND row = :row: AND field = :field: AND lang = :lang:',
-			'bind' => $data
-		]);
+        $className = $this->_backend;
+        $this->_translations[$language][$field] = $className::findFirst([
+            'table = :table: AND row = :row: AND field = :field: AND lang = :lang:',
+            'bind' => $data,
+        ]);
 
-		if (!$this->_translations[$language][$field]) {
-			$new = new $className($data);
-			$new->text = '';
-			$this->_translations[$language][$field] = $new;
-		}
-	}
+        if (!$this->_translations[$language][$field]) {
+            $new = new $className($data);
+            $new->text = '';
+            $this->_translations[$language][$field] = $new;
+        }
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function persist(array $records = null)
-	{
-		if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
-			return false;
-		}
-		if (!$this->_key) {
-			$this->generateKey();
-			$key = $this->_key;
+    /**
+     * {@inheritdoc}
+     */
+    public function persist(array $records = null)
+    {
+        if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
+            return false;
+        }
+        if (!$this->_key) {
+            $this->generateKey();
+            $key = $this->_key;
 
-			array_walk_recursive($this->_translations, function($translation) use ($key) {
-				if (!$translation->row) {
-					$translation->row = $key;
-				}
-			});
-		}
+            array_walk_recursive($this->_translations, function ($translation) use ($key) {
+                if (!$translation->row) {
+                    $translation->row = $key;
+                }
+            });
+        }
 
-		if ($records === null) {
-			array_walk_recursive($this->_translations, function($model) {
-				$model->save();
-			});
-		} else {
-			$this->__persist($records);
-		}
-	}
+        if ($records === null) {
+            array_walk_recursive($this->_translations, function ($model) {
+                $model->save();
+            });
+        } else {
+            $this->__persist($records);
+        }
+    }
 
-	private function __persist(array $records)
-	{
-		foreach ($records as $language => $fields) {
-			foreach ($fields as $field) {
-				if (isset($this->_translations[$language][$field])) {
-					$this->_translations[$language][$field]->save();
-				}
-			}
-		}
-	}
+    private function __persist(array $records)
+    {
+        foreach ($records as $language => $fields) {
+            foreach ($fields as $field) {
+                if (isset($this->_translations[$language][$field])) {
+                    $this->_translations[$language][$field]->save();
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function remove()
-	{
-		if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
-			return false;
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function remove()
+    {
+        if ($this->_src->getDirtyState() === \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT) {
+            return false;
+        }
 
-		if ($this->_key === null) {
-			$this->generateKey();
-		}
+        if ($this->_key === null) {
+            $this->generateKey();
+        }
 
-		$className = $this->_backend;
-		$result = $className::find(['table = :table: AND row = :row:', 'bind' => [
-			'table' => $this->_src->getSource(),
-			'row'   => $this->_key
-		]]);
+        $className = $this->_backend;
+        $result = $className::find(['table = :table: AND row = :row:', 'bind' => [
+            'table' => $this->_src->getSource(),
+            'row'   => $this->_key,
+        ]]);
 
-		foreach ($result as $model) {
-			$model->delete();
-		}
-	}
+        foreach ($result as $model) {
+            $model->delete();
+        }
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function set($field, $language, $value)
-	{
-		if (!isset($this->_translations[$language])) {
-			$this->_translations[$language] = [];
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function set($field, $language, $value)
+    {
+        if (!isset($this->_translations[$language])) {
+            $this->_translations[$language] = [];
+        }
 
-		if (!isset($this->_translations[$language][$field])) {
-			$this->_translations[$language][$field] = null;
-		}
+        if (!isset($this->_translations[$language][$field])) {
+            $this->_translations[$language][$field] = null;
+        }
 
-		if ($this->_translations[$language][$field] instanceof \Phalcon\Mvc\Model) {
-			$this->_translations[$language][$field]->text = $value;
-		} else {
-			if ($this->_src->getDirtyState() !== \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT && $this->_key === null) {
-				$this->generateKey();
-			}
+        if ($this->_translations[$language][$field] instanceof \Phalcon\Mvc\Model) {
+            $this->_translations[$language][$field]->text = $value;
+        } else {
+            if ($this->_src->getDirtyState() !== \Phalcon\Mvc\Model::DIRTY_STATE_TRANSIENT && $this->_key === null) {
+                $this->generateKey();
+            }
 
-			$className = $this->_backend;
-			$model = new $className();
-			$model->table = $this->_src->getSource();
-			$model->row   = $this->_key;
-			$model->field = $field;
-			$model->lang  = $language;
-			$model->text  = $value;
-			$this->_translations[$language][$field] = $model;
-		}
-	}
+            $className = $this->_backend;
+            $model = new $className();
+            $model->table = $this->_src->getSource();
+            $model->row   = $this->_key;
+            $model->field = $field;
+            $model->lang  = $language;
+            $model->text  = $value;
+            $this->_translations[$language][$field] = $model;
+        }
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function retrieve(\Ovide\Lib\Translate\Model $model, $pk, array $options=null)
-	{
-		if ($options === null || !isset($options['backendModel'])) {
-			throw new \LogicException("backendModel must be given");
-		}
-		return new static($model, $pk, $options);
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public static function retrieve(\Ovide\Lib\Translate\Model $model, $pk, array $options = null)
+    {
+        if ($options === null || !isset($options['backendModel'])) {
+            throw new \LogicException("backendModel must be given");
+        }
+
+        return new static($model, $pk, $options);
+    }
 }

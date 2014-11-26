@@ -1,4 +1,4 @@
-<?php namespace Mocks;
+<?php namespace mocks;
 
 /**
  * @property string $name
@@ -8,17 +8,17 @@
  */
 class Table13 extends \Ovide\Lib\Translate\Model
 {
-	const SRC_TABLE = 'table3';
+    const SRC_TABLE = 'table3';
 
-	public $t1_id;
-	public $t2_id;
+    public $t1_id;
+    public $t2_id;
 
-	protected $_translatable = ['name', 'description'];
+    protected $_translatable = ['name', 'description'];
 
-	public function initialize()
-	{
-		$this->setSource(static::SRC_TABLE);
-		$this->hasManyToMany('id', Table13::class, 't2_id', 't1_id', Table11::class, 'id', ['alias' => 't1']);
-		$this->hasMany('id', Table13::class, 't2_id', ['alias' => 't3']);
-	}
+    public function initialize()
+    {
+        $this->setSource(static::SRC_TABLE);
+        $this->hasManyToMany('id', Table13::class, 't2_id', 't1_id', Table11::class, 'id', ['alias' => 't1']);
+        $this->hasMany('id', Table13::class, 't2_id', ['alias' => 't3']);
+    }
 }

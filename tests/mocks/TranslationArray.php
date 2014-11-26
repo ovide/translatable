@@ -1,85 +1,86 @@
-<?php namespace Mocks;
-
+<?php namespace mocks;
 
 class TranslationArray implements \Ovide\Lib\Translate\TranslationInterface
 {
-	protected $_translations =
-	[
-		1 => [
-			'en' => [
-				'name' => 'The translated name',
-				'description' => 'The translated description'
-			]
-		]
-	];
+    protected $_translations =
+    [
+        1 => [
+            'en' => [
+                'name' => 'The translated name',
+                'description' => 'The translated description',
+            ],
+        ],
+    ];
 
-	protected $_tmpTranslations = [];
+    protected $_tmpTranslations = [];
 
-	protected $_id;
+    protected $_id;
 
-	private static $__counter = [];
+    private static $__counter = [];
 
-	public function get($field, $language)
-	{
-		static::increment(__FUNCTION__);
-		if ($this->_id && isset($this->_translations[$this->_id][$language][$field])) {
-			return $this->_translations[$this->_id][$language][$field];
-		}
+    public function get($field, $language)
+    {
+        static::increment(__FUNCTION__);
+        if ($this->_id && isset($this->_translations[$this->_id][$language][$field])) {
+            return $this->_translations[$this->_id][$language][$field];
+        }
 
-		if (isset($this->_tmpTranslations[$language][$field])) {
-			return $this->_tmpTranslations[$language][$field];
-		}
+        if (isset($this->_tmpTranslations[$language][$field])) {
+            return $this->_tmpTranslations[$language][$field];
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	public function persist(array $records = null)
-	{
-		static::increment(__FUNCTION__);
-		return null;
-	}
+    public function persist(array $records = null)
+    {
+        static::increment(__FUNCTION__);
 
-	public function remove()
-	{
-		static::increment(__FUNCTION__);
-		return null;
-	}
+        return null;
+    }
 
-	public function set($field, $language, $value)
-	{
-		static::increment(__FUNCTION__);
-		$this->_tmpTranslations[$language][$field] = $value;
-	}
+    public function remove()
+    {
+        static::increment(__FUNCTION__);
 
-	public static function retrieve(\Ovide\Lib\Translate\Model $model, $pk, array $options=null)
-	{
-		static::increment(__FUNCTION__);
+        return null;
+    }
 
-		$instance = new static();
-		if (count($pk)) {
-			$instance->_id = $model->{$pk[0]};
-		}
+    public function set($field, $language, $value)
+    {
+        static::increment(__FUNCTION__);
+        $this->_tmpTranslations[$language][$field] = $value;
+    }
 
-		return $instance;
-	}
+    public static function retrieve(\Ovide\Lib\Translate\Model $model, $pk, array $options = null)
+    {
+        static::increment(__FUNCTION__);
 
-	private static function increment($function)
-	{
-		if (!isset(static::$__counter[$function])) {
-			static::$__counter[$function] = 1;
-		} else {
-			static::$__counter[$function]++;
-		}
-	}
+        $instance = new static();
+        if (count($pk)) {
+            $instance->_id = $model->{$pk[0]};
+        }
 
-	public static function resetCounter()
-	{
-		return static::getCounter();
-		static::$__counter = [];
-	}
+        return $instance;
+    }
 
-	public static function getCounter()
-	{
-		return static::$__counter;
-	}
+    private static function increment($function)
+    {
+        if (!isset(static::$__counter[$function])) {
+            static::$__counter[$function] = 1;
+        } else {
+            static::$__counter[$function]++;
+        }
+    }
+
+    public static function resetCounter()
+    {
+        return static::getCounter();
+        static::$__counter = [];
+    }
+
+    public static function getCounter()
+    {
+        return static::$__counter;
+    }
 }

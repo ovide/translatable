@@ -15,9 +15,9 @@
  */
 abstract class AbstractBackend extends \Phalcon\Mvc\Model
 {
-	public $table;
-	public $row;
-	public $field;
-	public $lang;
-	public $text;
+    public $table;
+    public $row;
+    public $field;
+    public $lang;
+    public $text;
 }
